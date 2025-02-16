@@ -28,8 +28,9 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git pull --rebase
           git add ipfs_index.json
-          git commit -m "Updated IPFS Index" || echo "No changes to commit"
+          git commit -m "Updated IPFS Index"
           git push
