@@ -28,14 +28,14 @@ jobs:
         env:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
 
-      - name: Debug Git Status
+      - name: Debug Git Status Before Committing
         run: |
           echo "Checking Git status before committing..."
           git status
           ls -l ipfs_index.json
           cat ipfs_index.json
 
-      - name: Commit and Push Changes
+      - name: Force Commit and Push Changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -44,7 +44,8 @@ jobs:
           git fetch origin main
           git reset --hard origin/main  # Ensure we're on the latest commit
           git clean -fd  # Remove untracked files
-          
-          git add ipfs_index.json
+
+          echo "Forcing Git to track ipfs_index.json..."
+          git add -f ipfs_index.json  # Force add
           git commit -m "Updated IPFS Index" || echo "No changes to commit"
-          git push origin main || (git pull --rebase && git push origin main)
+          git push origin main --force
