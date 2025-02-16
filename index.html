@@ -6,7 +6,7 @@
     <title>IPFS File Index</title>
     <script>
         async function loadIndex() {
-            const repoOwner = "REDC2PORTAL";  // Replace with your GitHub username
+            const repoOwner = "REDC2PORTAL";  // Your GitHub username
             const repoName = "ipfs-index";  // Your repository name
             const url = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/ipfs_index.json`;
 
@@ -29,7 +29,7 @@
                 let row = table.insertRow();
                 row.innerHTML = `
                     <td>${file.filename || "Unknown"}</td>
-                    <td><a href="https://ipfs.redc2portal.com/ipfs/${file.cid}" target="_blank">${file.cid}</a></td>
+                    <td><a href="https://plum-tropical-vole-744.mypinata.cloud/ipfs/${file.cid}" target="_blank">${file.cid}</a></td>
                     <td>${file.size}</td>
                     <td>${file.date_added}</td>
                     <td>${file.description || "N/A"}</td>
