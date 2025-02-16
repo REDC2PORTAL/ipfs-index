@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Ensure full commit history
+          fetch-depth: 0  # Ensures full commit history to prevent conflicts
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -28,11 +28,22 @@ jobs:
         env:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
 
-      - name: Ensure Git is in Sync
+      - name: Force Git Sync Before Committing
         run: |
           git fetch origin main
-          git reset --hard origin/main  # Ensures the latest version of main
-          git clean -fd  # Remove untracked files
+          git reset --hard origin/main  # Forces local repo to match remote
+          git clean -fd                 # Deletes untracked files to prevent issues
+          git status                     # Verify status before proceeding
+
+      - name: Stage Changes for Commit
+        run: |
+          echo "Checking modified files..."
+          git status
+
+          echo "Staging ipfs_index.json..."
+          git add ipfs_index.json
+
+          echo "Verifying staged changes..."
           git status
 
       - name: Commit and Push Changes
@@ -42,14 +53,8 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
           
-          echo "Staging changes..."
-          git add ipfs_index.json
-          
-          echo "Checking status before committing..."
-          git status
-          
-          echo "Committing changes..."
-          git commit -m "Updated IPFS Index" || echo "No changes to commit"
-          
+          echo "Attempting commit..."
+          git commit -m "Updated IPFS Index from Pinata" || echo "⚠️ No changes detected, skipping commit."
+
           echo "Pushing changes..."
-          git push origin main || echo "Push failed, retrying..." && git pull --rebase && git push origin main
+          git push origin main || (git pull --rebase && git push origin main)
