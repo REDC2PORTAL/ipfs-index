@@ -35,7 +35,7 @@ jobs:
           ls -l ipfs_index.json
           cat ipfs_index.json
 
-      - name: **Force Commit and Push Changes**
+      - name: Commit and Push Changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
