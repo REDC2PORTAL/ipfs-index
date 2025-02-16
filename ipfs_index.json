@@ -1,6 +1,13 @@
 {
     "index": [
         {
+            "filename": "winPEASany_ofs.exe",
+            "cid": "bafybeibkdn7a5a5qfylb2qzwew5zaiyf7tgcrsunjkfktf344eyc27ylt4",
+            "size": 2235339,
+            "date_added": "2025-02-16T09:20:34.767Z",
+            "description": "N/A"
+        },
+        {
             "filename": "winPEAS.ps1",
             "cid": "bafkreibz4cilxonbusd4q53rfvdmwtlu7sbzolkvphcu6pzmivf754hv6q",
             "size": 78646,
