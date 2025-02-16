@@ -1,0 +1,35 @@
+name: Update IPFS Index
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch: 
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install axios dotenv
+
+      - name: Fetch Pinned Files from Pinata
+        run: node fetch_pins.js
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add ipfs_index.json
+          git commit -m "Updated IPFS Index" || echo "No changes to commit"
+          git push
