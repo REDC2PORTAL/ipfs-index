@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Ensure full history to prevent push issues
+          fetch-depth: 0  # Ensure full history
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -35,17 +35,28 @@ jobs:
           ls -l ipfs_index.json
           cat ipfs_index.json
 
-      - name: Force Commit and Push Changes
+      - name: **Force Commit and Push Changes**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
+          
+          echo "Fetching latest changes..."
           git fetch origin main
-          git reset --hard origin/main  # Ensure we're on the latest commit
+
+          echo "Ensuring clean working directory..."
+          git reset --hard origin/main  # Ensures the latest commit is present
           git clean -fd  # Remove untracked files
 
-          echo "Forcing Git to track ipfs_index.json..."
-          git add -f ipfs_index.json  # Force add
+          echo "Staging modified files..."
+          git add ipfs_index.json  # Explicitly stage the modified JSON file
+          
+          echo "Checking status after adding..."
+          git status
+
+          echo "Committing changes..."
           git commit -m "Updated IPFS Index" || echo "No changes to commit"
+
+          echo "Pushing changes..."
           git push origin main --force
