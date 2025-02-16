@@ -56,8 +56,3 @@ jobs:
 
           echo "Pushing changes..."
           git push origin main || (git pull --rebase && git push origin main)
-
-      - name: Trigger GitHub Pages Deployment
-        run: |
-          git commit --allow-empty -m "Trigger GitHub Pages rebuild"
-          git push origin main
