@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPFS File Index</title>
+    <script>
+        async function loadIndex() {
+            const repoOwner = "REDC2PORTAL";  // Replace with your GitHub username
+            const repoName = "ipfs-index";  // Your repository name
+            const url = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/ipfs_index.json`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                displayIndex(data.index);
+            } catch (error) {
+                console.error("Failed to load index:", error);
+                document.getElementById("content").innerHTML = "Failed to load index.";
+            }
+        }
+
+        function displayIndex(files) {
+            const table = document.getElementById("fileTable");
+            files.forEach(file => {
+                let row = table.insertRow();
+                row.innerHTML = `
+                    <td>${file.filename || "Unknown"}</td>
+                    <td><a href="https://ipfs.redc2portal.com/ipfs/${file.cid}" target="_blank">${file.cid}</a></td>
+                    <td>${file.size}</td>
+                    <td>${file.date_added}</td>
+                    <td>${file.description || "N/A"}</td>
+                `;
+            });
+        }
+
+        window.onload = loadIndex;
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h2>IPFS File Index</h2>
+    <table id="fileTable">
+        <tr>
+            <th>Filename</th>
+            <th>CID</th>
+            <th>Size (Bytes)</th>
+            <th>Date Added</th>
+            <th>Description</th>
+        </tr>
+    </table>
+    <div id="content"></div>
+</body>
+</html>
