@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Ensure full commit history
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -24,9 +24,7 @@ jobs:
         run: npm install axios dotenv
 
       - name: Fetch Pinned Files from Pinata
-        run: |
-          node fetch_pins.js
-          ls -lah ipfs_index.json  # Debug: Check if file was created
+        run: node fetch_pins.js
         env:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
 
@@ -36,7 +34,20 @@ jobs:
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
-          git pull origin main --rebase || git reset --hard origin/main  # Ensure latest version
+          git fetch origin main
+          
+          # Reset to latest main branch to avoid conflicts
+          git reset --hard origin/main
+
+          # Ensure working directory is clean
+          git clean -fd
+
+          # Verify if there are any actual changes
           git add ipfs_index.json
-          git commit -m "Updated IPFS Index" || echo "No changes to commit"
-          git push origin main
+          if git diff --cached --quiet; then
+            echo "⚠️ No changes detected in ipfs_index.json. Skipping commit."
+            exit 0
+          fi
+
+          git commit -m "Updated IPFS Index"
+          git push origin main --force
