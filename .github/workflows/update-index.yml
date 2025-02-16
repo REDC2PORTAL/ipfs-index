@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Ensures full commit history to prevent conflicts
+          fetch-depth: 0  # Ensures full commit history
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -28,18 +28,16 @@ jobs:
         env:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
 
-      - name: Force Git Sync Before Committing
+      - name: Ensure Changes Are Detected
         run: |
-          git fetch origin main
-          git reset --hard origin/main  # Forces local repo to match remote
-          git clean -fd                 # Deletes untracked files to prevent issues
-          git status                     # Verify status before proceeding
+          echo "Checking file modification timestamps..."
+          ls -l ipfs_index.json
+
+          echo "Checking file differences..."
+          git diff ipfs_index.json || echo "No differences found"
 
       - name: Stage Changes for Commit
         run: |
-          echo "Checking modified files..."
-          git status
-
           echo "Staging ipfs_index.json..."
           git add ipfs_index.json
 
