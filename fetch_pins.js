@@ -11,20 +11,18 @@ async function fetchPinataFiles() {
             headers: { "Authorization": `Bearer ${PINATA_JWT}` }
         });
 
-        console.log("📥 Raw response from Pinata:", response.data); // Debugging Log
-
-        const files = response.data.rows.map(file => ({
-            filename: file.metadata.name || "Unknown",
-            cid: file.ipfs_pin_hash,
-            size: file.size,
-            date_added: file.date_pinned,
-            description: file.metadata.keyvalues?.description || "N/A"
-        }));
-
-        console.log("📄 Parsed IPFS files:", files); // Debugging Log
+        // Filter only files that are still pinned (not unpinned)
+        const files = response.data.rows
+            .filter(file => file.date_unpinned === null) // ✅ Ensure only pinned files remain
+            .map(file => ({
+                filename: file.metadata.name || "Unknown",
+                cid: file.ipfs_pin_hash,
+                size: file.size,
+                date_added: file.date_pinned,
+                description: file.metadata.keyvalues?.description || "N/A"
+            }));
 
         fs.writeFileSync("ipfs_index.json", JSON.stringify({ index: files }, null, 4));
-
         console.log("✅ IPFS index updated successfully!");
     } catch (error) {
         console.error("❌ Error fetching from Pinata:", error);
