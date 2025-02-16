@@ -1,6 +1,13 @@
 {
     "index": [
         {
+            "filename": "lse.sh",
+            "cid": "bafkreigmw2qwjsvfsc6gayk6pjgv5t7zcyvynxempavblmomz3poalfasu",
+            "size": 55098,
+            "date_added": "2025-02-16T09:27:20.276Z",
+            "description": "N/A"
+        },
+        {
             "filename": "winPEASany_ofs.exe",
             "cid": "bafybeibkdn7a5a5qfylb2qzwew5zaiyf7tgcrsunjkfktf344eyc27ylt4",
             "size": 2235339,
